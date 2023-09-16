@@ -1,0 +1,21 @@
+{
+  "name": "com.estenis.gameevents",
+  "version": "1.0.0",
+  "displayName": "Game Events Code",
+  "description": "Scripts for using game events",
+  "unity": "2019.1",
+  "unityRelease": "0b5",  
+  "dependencies": {
+    "com.estenis.gamedata": "1.0.0"
+	
+ },
+ "keywords": [
+    "event",
+    "gameevent"    
+  ],
+  "author": {
+    "name": "Ernesto Pavon",
+    "email": "bittinkerer@gmail.com",
+    "url": "https://github.com/bittinkerer"
+  }
+}
