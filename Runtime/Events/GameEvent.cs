@@ -35,8 +35,7 @@ namespace Packages.Estenis.GameEvent_
 
     public class GameEvent<T> : ScriptableObject where T: GameData
     {
-        private readonly Dictionary<int, HashSet<Action<T>>> _handlers =
-            new Dictionary<int, HashSet<Action<T>>>();
+        private readonly Dictionary<int, HashSet<Action<T>>> _handlers = new();
 
         public void Raise(T data)
         {
@@ -71,7 +70,7 @@ namespace Packages.Estenis.GameEvent_
             _handlers[clientId].Add(action);
         }
 
-        internal void Unregister(int clientId, Action<T> action)
+        public void Unregister(int clientId, Action<T> action)
         {
             foreach (var item in _handlers.Where(kv => kv.Value.Any(a => a == action) && kv.Key == clientId).ToList())
             {
