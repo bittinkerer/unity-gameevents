@@ -1,10 +1,10 @@
-﻿using Packages.Estenis.GameData.RunTime.Models;
+﻿using Packages.Estenis.GameData_;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.StateMachine.GameEvents
+namespace Packages.Estenis.GameEvent_
 {
     [CreateAssetMenu(menuName = "GameEvent/GameEvent")]
     public class GameEvent : ScriptableObject

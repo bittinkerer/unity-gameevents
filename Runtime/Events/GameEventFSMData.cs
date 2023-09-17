@@ -1,7 +1,7 @@
-﻿using Packages.Estenis.GameData.RunTime.Models;
+﻿using Packages.Estenis.GameData_;
 using UnityEngine;
 
-namespace Assets.Scripts.StateMachine.GameEvents
+namespace Packages.Estenis.GameEvent_
 {
     [CreateAssetMenu(menuName = "GameEvent/GameEventGameData")]
     public class GameEventGameData : GameEvent<GameData>
