@@ -11,12 +11,12 @@ namespace Packages.Estenis.GameEvent_
     {
         public event EventHandler<T> Handler;
 
-        public void RemoveHandler(int clientId)
+        public void RemoveHandler(int instanceId)
         {
             var handlers = Handler?.GetInvocationList() ?? Array.Empty<Delegate>();                
             foreach (var handler in handlers)
             {
-                if (handler.Target.GetHashCode() == clientId)
+                if (handler.Target.GetHashCode() == instanceId)
                 {
                     Handler -= (EventHandler<T>)handler;
                 }
