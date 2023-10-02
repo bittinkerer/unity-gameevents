@@ -9,7 +9,12 @@ namespace Packages.Estenis.GameEvent_
     [CreateAssetMenu(menuName = "GameEvent/GenericGameEvent")]
     public class GameEvent<T> : ScriptableObject
     {
-        private readonly Dictionary<int, HashSet<Action<object, T>>> _handlers = new();
+        private Dictionary<int, HashSet<Action<object, T>>> _handlers; 
+
+        private void OnEnable()
+        {
+            _handlers = new Dictionary<int, HashSet<Action<object, T>>>();
+        }
 
         public void Raise(int instanceId, object sender, T data)
         {
