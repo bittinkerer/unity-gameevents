@@ -9,11 +9,11 @@ namespace Packages.Estenis.GameEvent_
     [CreateAssetMenu(menuName = "GameEvent/GenericGameEvent")]
     public class GameEvent<T> : ScriptableObject
     {
-        private Dictionary<int, HashSet<Action<object, T>>> _handlers; 
+        private Dictionary<int, HashSet<ActionWrapper<object, T>>> _handlers; 
 
         private void OnEnable()
         {
-            _handlers = new Dictionary<int, HashSet<Action<object, T>>>();
+            _handlers = new Dictionary<int, HashSet<ActionWrapper<object, T>>>();
         }
 
         public void Raise(int instanceId, object sender, T data)
@@ -30,22 +30,22 @@ namespace Packages.Estenis.GameEvent_
                 .Where(a => instanceId == a.Key || instanceId == int.MinValue || a.Key == int.MinValue)
                 .SelectMany(kv => kv.Value)
                 .ToArray();
-            foreach (var handler in handlers ?? Array.Empty<Action<object, T>>())
+            foreach (var handler in handlers ?? Array.Empty<ActionWrapper<object, T>>())
             {
-                handler(sender, data);
+                ((Action<object,T>)handler)(sender, data);
             }
         }
 
-        public void Register(int instanceId, Action<object, T> action)
+        public void Register(int instanceId, ActionWrapper<object, T> action)
         {
             if(!_handlers.ContainsKey(instanceId))
             {
-                _handlers[instanceId] = new HashSet<Action<object, T>>();
+                _handlers[instanceId] = new HashSet<ActionWrapper<object, T>>();
             }
             _handlers[instanceId].Add(action);
         }
 
-        public void Unregister(int instanceId, Action<object, T> action)
+        public void Unregister(int instanceId, ActionWrapper<object, T> action)
         {
             foreach (var item in _handlers
                         .Where(kv => kv.Key == instanceId && kv.Value.Any(a => a == action)).ToList())
@@ -58,7 +58,7 @@ namespace Packages.Estenis.GameEvent_
         /// Unregister an action_listener from event for matching action_listener ONLY
         /// </summary>
         /// <param name="action"></param>
-        public void Unregister(Action<object, T> action)
+        public void Unregister(ActionWrapper<object, T> action)
         {
             foreach (var item in _handlers.Where(kv => kv.Value.Any(a => a == action)).ToList())
             {
@@ -69,7 +69,7 @@ namespace Packages.Estenis.GameEvent_
         public void UnregisterAll() =>
             _handlers.Clear();
 
-        public bool IsActive(int clientId, Action<object, T> action) =>
+        public bool IsActive(int clientId, ActionWrapper<object, T> action) =>
             _handlers.Any(a => a.Key == clientId && a.Value.Any(a => a == action));
 
     }

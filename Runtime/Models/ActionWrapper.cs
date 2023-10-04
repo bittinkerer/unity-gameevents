@@ -23,7 +23,7 @@ public sealed class ActionWrapper<T1,T2>
         new(default, action);
 
     public bool Equals(ActionWrapper<T1, T2> other) =>
-        Guid != default(Guid)
+        Guid != default
         ? Guid == other.Guid
         : _Action == other._Action;
 
@@ -41,4 +41,10 @@ public sealed class ActionWrapper<T1,T2>
 
     public int GetHashCode(ActionWrapper<T1, T2> obj) =>
         ((ActionWrapper<T1,T2>)obj).GetHashCode();
+
+    public override bool Equals(object obj) =>
+        this == (ActionWrapper<T1,T2>)obj;
+
+    public override string ToString() =>
+        $"Guid: {this.Guid}, Action: {this._Action}";
 }
