@@ -47,7 +47,8 @@ namespace Packages.Estenis.GameEvent_
 
         public void Unregister(int instanceId, Action<object, T> action)
         {
-            foreach (var item in _handlers.Where(kv => kv.Value.Any(a => a == action) && kv.Key == instanceId).ToList())
+            foreach (var item in _handlers
+                        .Where(kv => kv.Key == instanceId && kv.Value.Any(a => a == action)).ToList())
             {
                 _handlers[instanceId].Remove(action);
             }
