@@ -16,6 +16,14 @@ namespace Packages.Estenis.GameEvent_
             _handlers = new Dictionary<int, HashSet<ActionWrapper<object, T>>>();
         }
 
+        /// <summary>
+        /// Raise global event with no sender or data.
+        /// </summary>
+        public void Raise()
+        {
+            Raise(int.MinValue, this, default);
+        }
+
         public void Raise(int instanceId, object sender, T data)
         {
             // copying _actions locally means an action can Unregister event in the middle
