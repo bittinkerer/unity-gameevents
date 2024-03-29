@@ -4,14 +4,10 @@
   "displayName": "Game Events Code",
   "description": "Scripts for using game events",
   "unity": "2019.1",
-  "unityRelease": "0b5",  
-  "dependencies": {
-    "com.estenis.gamedata": "1.0.0"
-	
- },
- "keywords": [
+  "unityRelease": "0b5",
+  "keywords": [
     "event",
-    "gameevent"    
+    "gameevent"
   ],
   "author": {
     "name": "Ernesto Pavon",

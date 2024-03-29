@@ -11,6 +11,7 @@ namespace Packages.Estenis.GameEvent_
     {
         private Dictionary<int, HashSet<ActionWrapper<object, T>>> _handlers; 
 
+        
         private void OnEnable()
         {
             _handlers = new Dictionary<int, HashSet<ActionWrapper<object, T>>>();
