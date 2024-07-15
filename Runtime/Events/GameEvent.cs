@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Packages.Estenis.GameEvent_
@@ -9,12 +10,16 @@ namespace Packages.Estenis.GameEvent_
     [CreateAssetMenu(menuName = "GameEvent/GenericGameEvent")]
     public class GameEvent<T> : ScriptableObject
     {
-        private Dictionary<int, HashSet<ActionWrapper<object, T>>> _handlers; 
+        public static int GlobalId => int.MinValue;
+        private Dictionary<int, HashSet<ActionWrapper<GameObject, T>>> _handlers;
+#if DEBUG
+        public GameObject GameObjectForManualTrigger;
+#endif
 
-        
+
         private void OnEnable()
         {
-            _handlers = new Dictionary<int, HashSet<ActionWrapper<object, T>>>();
+            _handlers = new Dictionary<int, HashSet<ActionWrapper<GameObject, T>>>();
         }
 
         /// <summary>
@@ -22,10 +27,10 @@ namespace Packages.Estenis.GameEvent_
         /// </summary>
         public void Raise()
         {
-            Raise(int.MinValue, this, default);
+            Raise(int.MinValue, null, default);
         }
 
-        public void Raise(int instanceId, object sender, T data)
+        public void Raise(int instanceId, GameObject sender, T data)
         {
             // copying _actions locally means an action can Unregister event in the middle
             // of the foreach loop and not cause an exception; all actions will execute
@@ -39,39 +44,29 @@ namespace Packages.Estenis.GameEvent_
                 .Where(a => instanceId == a.Key || instanceId == int.MinValue || a.Key == int.MinValue)
                 .SelectMany(kv => kv.Value)
                 .ToArray();
-            foreach (var handler in handlers ?? Array.Empty<ActionWrapper<object, T>>())
+            foreach (var handler in handlers ?? Array.Empty<ActionWrapper<GameObject, T>>())
             {
-                ((Action<object,T>)handler)(sender, data);
+                ((Action<GameObject, T>)handler)(sender, data);
             }
         }
 
-        public void Register(int instanceId, ActionWrapper<object, T> action)
+        public void Register(int instanceId, ActionWrapper<GameObject, T> action)
         {
             if(!_handlers.ContainsKey(instanceId))
             {
-                _handlers[instanceId] = new HashSet<ActionWrapper<object, T>>();
+                _handlers[instanceId] = new HashSet<ActionWrapper<GameObject, T>>();
             }
             _handlers[instanceId].Add(action);
         }
 
-        public void Unregister(int instanceId, ActionWrapper<object, T> action)
+        public void Unregister(int instanceId, ActionWrapper<GameObject, T> action)
         {
-            foreach (var item in _handlers
-                        .Where(kv => kv.Key == instanceId && kv.Value.Any(a => a == action)).ToList())
+            var handlers = _handlers
+                        .Where(kv => (kv.Key == instanceId || instanceId == GlobalId) && kv.Value.Any(a => a == action))
+                        .ToList() ?? new List<KeyValuePair<int, HashSet<ActionWrapper<GameObject, T>>>>();
+            foreach (var item in handlers)
             {
                 _handlers[instanceId].Remove(action);
-            }
-        }
-
-        /// <summary>
-        /// Unregister an action_listener from event for matching action_listener ONLY
-        /// </summary>
-        /// <param name="action"></param>
-        public void Unregister(ActionWrapper<object, T> action)
-        {
-            foreach (var item in _handlers.Where(kv => kv.Value.Any(a => a == action)).ToList())
-            {
-                _handlers[item.Key].Remove(action);
             }
         }
 
