@@ -2,7 +2,8 @@
     "name": "_GameEventEditor",
     "rootNamespace": "",
     "references": [
-        "GUID:5e95f0768a6f5a143b06f6581af40f9f"
+        "GUID:5e95f0768a6f5a143b06f6581af40f9f",
+        "GUID:950a5a989d74f114d99f2262765a2521"
     ],
     "includePlatforms": [
         "Editor"
