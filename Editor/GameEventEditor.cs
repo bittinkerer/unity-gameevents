@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using Packages.Estenis.UnityExts_;
-using System.Reflection;
 
 [CustomEditor( typeof( GameEventObject ) )]
 public class GameEventEditor : Editor {
@@ -17,14 +16,15 @@ public class GameEventEditor : Editor {
   private bool              _showReferences = false;
 
   private void OnEnable( ) {
-    this._target = (GameEventObject)target;
+    this._target = (GameEventObject) target;
     // References
-    _references = FindPrefabReferences( _target ).ToList();
+    //_references = FindPrefabReferences( _target ).ToList(); // !! expensive computation
     _referencesList = new ReorderableList(
       _references,
       typeof( GameObject ) ) {
       drawElementCallback = DrawReferenceEntry,
-      drawHeaderCallback = (rect) => GUI.Label( new Rect( rect.x, rect.y, rect.width, rect.height ), "Prefabs" )
+      drawHeaderCallback = ( rect ) => GUI.Label( new Rect( rect.x, rect.y, rect.width, rect.height )
+      , $"Prefabs ({_referencesList.count})" )
     };
   }
 
@@ -42,8 +42,19 @@ public class GameEventEditor : Editor {
       }
 
       // Draw References
-      _showReferences = EditorGUILayout.Foldout( _showReferences, "Prefab References" );
+      _showReferences = EditorGUILayout.Foldout( _showReferences, $"Prefab References" );
       if ( _showReferences ) {
+        if ( _references == null || _references.Count <= 0 ) {
+          _references = FindPrefabReferences( _target ).ToList();
+          _referencesList = 
+            new ReorderableList(
+              _references,
+              typeof( GameObject ) ) {
+                    drawElementCallback = DrawReferenceEntry,
+                    drawHeaderCallback = ( rect ) => GUI.Label( new Rect( rect.x, rect.y, rect.width, rect.height )
+                    , $"Prefabs ({_referencesList.count})" )
+                  };
+        }
         _referencesList.DoLayoutList();
       }
     }
@@ -73,7 +84,7 @@ public class GameEventEditor : Editor {
         )
         .Count() > 0)
         .Select(go => go);
-    
+
     return prefabsWithEvent;
   }
 
